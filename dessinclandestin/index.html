@@ -110,6 +110,20 @@ html,html *{cursor:url(assets/cursor.png) 8 1,auto!important}
 .piece .cap{display:grid;gap:2px}
 .piece .cap b{font-weight:500}
 .piece .cap span{color:var(--muted)}
+.piece{transition:transform .15s}
+.piece:hover{transform:rotate(-.6deg)}
+.tag{color:var(--cut)!important;font-weight:500}
+.lb{position:fixed;inset:0;z-index:30;background:rgba(18,32,25,.94);display:grid;grid-template-rows:1fr auto;gap:16px;
+  padding:calc(56px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.lbmedia{min-height:0;display:grid;place-items:center}
+.lbmedia img,.lbmedia video{max-width:100%;max-height:100%;object-fit:contain;background:var(--paper)}
+.lbcap{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;max-width:1080px;width:100%;margin:0 auto;color:var(--mat);font:500 13px var(--mono)}
+.lbcap b{display:block;font:800 30px/1 var(--display);text-transform:uppercase;color:var(--paper);margin-bottom:4px}
+.lbcap .solid{background:var(--paper);color:var(--ink)}
+.lbcap .solid:hover{background:var(--cut);color:var(--paper)}
+.sold{font:700 16px var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--mat)}
+.lbx{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:max(16px,env(safe-area-inset-right,0px));width:44px;height:44px;border:1px solid var(--mat);background:none;color:var(--paper);font:400 20px var(--mono)}
+.lbx:hover{background:var(--cut);border-color:var(--cut)}
 </style>
 </head>
 <body>
@@ -179,6 +193,11 @@ html,html *{cursor:url(assets/cursor.png) 8 1,auto!important}
 </div>
 
 <div class="scrim" id="scrim" hidden></div>
+<div class="lb" id="lb" hidden role="dialog" aria-label="Œuvre">
+  <button class="lbx" id="lbClose" aria-label="Fermer / Close">✕</button>
+  <div class="lbmedia" id="lbMedia"></div>
+  <div class="lbcap" id="lbCap"></div>
+</div>
 <aside class="drawer" id="drawer" aria-label="Cart">
   <div class="row"><h2>Panier</h2><button class="x" id="closeCart">Close ✕</button></div>
   <div class="lines" id="lines"></div>
@@ -195,11 +214,22 @@ try{cart=JSON.parse(localStorage.getItem("cart")||"{}")}catch(e){}
 
 const r=$("#ruler"); for(let i=0;i<80;i++){const s=document.createElement("span");s.style.left=(i*120)+"px";s.textContent=i*5;r.appendChild(s)}
 
-function renderGallery(items){
-  $("#gallery").innerHTML=items.map(w=>`<figure class="sheet piece" style="margin:0 0 var(--u)"><span class="cutline"></span>
+const key=t=>t.normalize("NFD").replace(/[^a-z0-9]/gi,"").toLowerCase();
+const productFor=w=>products.find(p=>key(p.name)===key(w.title));
+let works=[];
+function renderGallery(){
+  $("#gallery").innerHTML=works.map((w,i)=>{const p=productFor(w);return`<figure class="sheet piece" data-open="${i}" tabindex="0" style="margin:0 0 var(--u)"><span class="cutline"></span>
     ${w.video?`<video src="${w.file}" muted loop autoplay playsinline></video>`:`<img src="${w.file}" alt="${w.title}" loading="lazy">`}
-    <figcaption class="cap"><b>${w.title}</b><span>${[w.medium,w.date].filter(Boolean).join(" · ")}</span></figcaption></figure>`).join("");
+    <figcaption class="cap"><b>${w.title}</b><span>${[w.medium,w.date].filter(Boolean).join(" · ")}</span>${p&&p.stock?`<span class="tag">En vente · ${money(p.price)}</span>`:""}</figcaption></figure>`}).join("");
 }
+function openLightbox(i){
+  const w=works[i],p=productFor(w);
+  $("#lbMedia").innerHTML=w.video?`<video src="${w.file}" controls autoplay loop playsinline></video>`:`<img src="${w.file}" alt="${w.title}">`;
+  $("#lbCap").innerHTML=`<div><b>${w.title}</b><span>${[w.medium,w.date].filter(Boolean).join(" · ")}</span></div>`+
+    (p?(p.stock?`<button class="solid" data-buy="${p.id}">Acheter / Buy · ${money(p.price)}</button>`:`<span class="sold">Vendu / Sold out</span>`):"");
+  $("#lb").hidden=false; document.body.style.overflow="hidden";
+}
+function closeLightbox(){$("#lb").hidden=true;$("#lbMedia").innerHTML="";document.body.style.overflow=""}
 function renderFilters(){
   $("#filters").innerHTML=["All","Original","Print","Zine"].map(k=>`<button class="btn" aria-pressed="${k===filter}" data-f="${k}">${k}</button>`).join("");
 }
@@ -236,6 +266,8 @@ function renderCart(){
 function openCart(o){$("#drawer").classList.toggle("open",o);$("#scrim").hidden=!o}
 
 document.addEventListener("click",e=>{
+  const o=e.target.closest("[data-open]"); if(o){openLightbox(+o.dataset.open);return}
+  const b=e.target.closest("[data-buy]"); if(b){const p=products.find(x=>x.id===b.dataset.buy);cart[p.id]=Math.min((cart[p.id]||0)+1,p.stock);save();renderCart();closeLightbox();openCart(true);return}
   const t=e.target.closest("[data-add],[data-q],[data-f]"); if(!t)return;
   if(t.dataset.add){const p=products.find(x=>x.id===t.dataset.add);cart[p.id]=Math.min((cart[p.id]||0)+1,p.stock);save();renderCart();openCart(true)}
   if(t.dataset.q){cart[t.dataset.q]+= +t.dataset.d;if(cart[t.dataset.q]<=0)delete cart[t.dataset.q];save();renderCart()}
@@ -258,8 +290,11 @@ function route(){
 }
 addEventListener("hashchange",route);
 route();
-fetch("gallery.json").then(r=>r.json()).then(renderGallery);
-fetch("products.json").then(r=>r.json()).then(d=>{products=d.items;shipping=d.shipping;renderFilters();renderGrid();renderCart()});
+Promise.all([fetch("gallery.json").then(r=>r.json()),fetch("products.json").then(r=>r.json())]).then(([g,d])=>{
+  works=g;products=d.items;shipping=d.shipping;renderGallery();renderFilters();renderGrid();renderCart()});
+$("#lbClose").onclick=closeLightbox;
+$("#lb").onclick=e=>{if(e.target.id==="lb"||e.target.id==="lbMedia")closeLightbox()};
+addEventListener("keydown",e=>{if(e.key==="Escape")closeLightbox();if(e.key==="Enter"&&e.target.dataset.open)openLightbox(+e.target.dataset.open)});
 </script>
 </body>
 </html>
