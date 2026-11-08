@@ -1,0 +1,12 @@
+{
+  "shipping": { "flat": 8, "freeOver": 75, "countries": ["CA"], "pickup": "Pickup in Montréal" },
+  "items": [
+    { "id": "z01", "name": "Carnet Nº1 — Métro", "kind": "Zine", "price": 18, "stock": 12, "note": "Riso · 32 p · ed. 100", "color": "#2c2c2a", "image": "" },
+    { "id": "z02", "name": "Heures volées", "kind": "Zine", "price": 15, "stock": 30, "note": "Riso · 24 p · ed. 80", "color": "#a8452f", "image": "" },
+    { "id": "o01", "name": "Cuisine, nuit", "kind": "Original", "price": 480, "stock": 1, "note": "Acrylic on panel · 40 × 50 cm · 1/1", "color": "#3d4b5c", "image": "" },
+    { "id": "o02", "name": "Étude Nº7", "kind": "Original", "price": 220, "stock": 0, "note": "Ink on paper · 28 × 35 cm · 1/1", "color": "#8a6d3b", "image": "" },
+    { "id": "p01", "name": "Plan 47", "kind": "Print", "price": 60, "stock": 0, "note": "Giclée · A3 · ed. 25", "color": "#6b6a3a", "image": "" },
+    { "id": "p02", "name": "Boyer, 6 h", "kind": "Print", "price": 60, "stock": 5, "note": "Giclée · A3 · ed. 25", "color": "#2f4a42", "image": "" },
+    { "id": "z03", "name": "Carnet Nº2 — Train", "kind": "Zine", "price": 18, "stock": 20, "note": "Riso · 32 p · ed. 100", "color": "#7a5c8a", "image": "" }
+  ]
+}

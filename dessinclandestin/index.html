@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dessin Clandestin</title>
+<meta name="description" content="Dessin Clandestin — drawings, paintings, prints and short-run zines from Montréal.">
+<meta property="og:title" content="Dessin Clandestin">
+<meta property="og:description" content="Drawings, paintings, prints and short-run zines from Montréal.">
+<link rel="icon" href="assets/cursor.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700;800&family=IBM+Plex+Mono:wght@400;500&family=Work+Sans:wght@400;500&display=swap">
+<style>
+/* Layout: the whole page is a self-healing cutting mat; content sits on paper sheets "laid" on the grid, ruler along the top. Single deliberate look. */
+:root{
+  --mat:#d3e5d4; --mat-deep:#c2d9c6; --line:rgba(30,80,55,.08); --line-major:rgba(30,80,55,.18);
+  --print:#1f3a2d; --paper:#fbfaf7; --ink:#1f1b26; --muted:#6e6878; --cut:#d6453b;
+  --display:"Barlow Condensed","Arial Narrow",sans-serif; --body:"Work Sans",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --u:24px; color-scheme:light;
+}
+*{box-sizing:border-box}
+body{background:var(--mat);color:var(--print);font-family:var(--body);font-size:15px;line-height:1.55;
+  background-image:
+    linear-gradient(var(--line-major) 1px,transparent 1px),linear-gradient(90deg,var(--line-major) 1px,transparent 1px),
+    linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:calc(var(--u)*5) calc(var(--u)*5),calc(var(--u)*5) calc(var(--u)*5),var(--u) var(--u),var(--u) var(--u);
+  background-position:-1px -1px;min-height:100vh;overflow-x:hidden}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:linear-gradient(135deg,transparent calc(50% - .5px),var(--line) 50%,transparent calc(50% + .5px)),
+             linear-gradient(45deg,transparent calc(50% - .5px),var(--line) 50%,transparent calc(50% + .5px))}
+.wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 96px}
+.ruler{position:relative;z-index:2;height:34px;border-bottom:1px solid var(--line-major);overflow:hidden;background:var(--mat-deep);
+  background-image:linear-gradient(90deg,var(--print) 1px,transparent 1px),linear-gradient(90deg,var(--print) 1px,transparent 1px);
+  background-size:var(--u) 8px,calc(var(--u)*5) 16px;background-repeat:repeat-x;background-position:-1px 100%}
+.ruler span{position:absolute;top:3px;font:500 10px var(--mono);color:var(--print);transform:translateX(3px)}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-block:28px 40px}
+.logo{font:800 34px/1 var(--display);letter-spacing:.02em;text-transform:uppercase;color:var(--print);text-decoration:none}
+.logo small{display:block;font:500 10px var(--mono);letter-spacing:.12em;opacity:.7;margin-top:4px}
+nav{display:flex;gap:4px;flex-wrap:wrap}
+nav a,.btn{font:700 15px var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--print);text-decoration:none;padding:6px 12px;border:1px solid transparent;background:none;cursor:pointer}
+nav a:hover,nav a[aria-current]{border-color:var(--print)}
+.cartbtn{border:1px solid var(--print)}
+.cartbtn b{font-family:var(--mono);font-weight:500;margin-left:6px}
+:focus-visible{outline:2px dashed var(--cut);outline-offset:3px}
+.label{font:500 11px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--print);opacity:.8;display:flex;gap:10px;align-items:center;margin-bottom:16px}
+.label::before{content:"";width:var(--u);height:1px;background:var(--print)}
+.hero{display:grid;gap:var(--u);margin-bottom:48px}
+.hero p{max-width:40ch;margin:0}
+.dim{font:400 11px var(--mono);opacity:.75}
+.sheet{background:var(--paper);color:var(--ink);position:relative;box-shadow:0 1px 0 rgba(0,0,0,.15),0 14px 30px -18px rgba(0,0,0,.6)}
+.sheet .dim{color:var(--muted);opacity:1}
+.cutline{position:absolute;inset:-8px;border:1px dashed var(--cut);pointer-events:none;opacity:0;transition:opacity .2s}
+.sheet:hover .cutline{opacity:1}
+section{margin-bottom:96px}
+.plate{aspect-ratio:3/2;max-width:100%;display:grid;place-items:center;font:800 26px var(--display);text-transform:uppercase;letter-spacing:.04em}
+.cap{display:flex;justify-content:space-between;padding:10px 12px;border-top:1px solid #e3e1d8;font:500 12px var(--mono)}
+.about{display:grid;grid-template-columns:1fr 1fr;gap:calc(var(--u)*2)}
+.about p{margin:0 0 12px;max-width:62ch}
+.about .fr{opacity:.75}
+.store h2{font:800 40px/1 var(--display);text-transform:uppercase;margin:0 0 20px}
+.solid{background:var(--ink);color:var(--paper);border:0;font:700 16px var(--display);letter-spacing:.1em;text-transform:uppercase;padding:12px 22px;cursor:pointer}
+.solid:hover{background:var(--cut)}
+.note{font:500 12px var(--mono);color:var(--cut);margin-top:10px}
+.gallery{columns:4 220px;column-gap:var(--u)}
+.piece{break-inside:avoid;margin-bottom:var(--u);display:block}
+.piece .plate{aspect-ratio:auto;font-size:18px;color:rgba(255,255,255,.85)}
+.piece .cap span:first-child{font-weight:500}
+footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;border-top:1px solid var(--line-major);padding-top:16px;font:400 11px var(--mono);opacity:.8}
+footer a{color:inherit}
+/* store */
+.storehead{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:40px}
+.storehead h2{font:800 clamp(48px,8vw,96px)/.9 var(--display);text-transform:uppercase;margin:0}
+.filters{display:flex;gap:4px;flex-wrap:wrap}
+.filters button[aria-pressed=true]{border-color:var(--print)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:calc(var(--u)*1.5) var(--u)}
+.prod .plate{aspect-ratio:4/5;font-size:20px;color:var(--paper);padding:20px;text-align:center}
+.prod .body{padding:14px 14px 16px;display:grid;gap:6px}
+.prod h3{font:700 22px/1.05 var(--display);text-transform:uppercase;margin:0}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.price{font:500 15px var(--mono);font-variant-numeric:tabular-nums}
+.add{background:none;border:1px solid var(--ink);color:var(--ink);font:700 13px var(--display);letter-spacing:.1em;text-transform:uppercase;padding:6px 12px;cursor:pointer}
+.add:hover{background:var(--ink);color:var(--paper)}
+.add:disabled{opacity:.4;cursor:default;background:none;color:var(--ink)}
+/* cart drawer */
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,100%);z-index:20;background:var(--paper);color:var(--ink);display:flex;flex-direction:column;
+  padding:calc(24px + env(safe-area-inset-top,0px)) max(24px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) 24px;
+  transform:translateX(100%);transition:transform .25s;box-shadow:-20px 0 40px -20px rgba(0,0,0,.6)}
+.drawer.open{transform:none}
+.scrim{position:fixed;inset:0;background:rgba(20,50,35,.4);z-index:15}
+html,html *{cursor:url(assets/cursor.png) 8 1,auto!important}
+.sticker{position:absolute;z-index:-1;width:110px;filter:drop-shadow(0 3px 3px rgba(20,50,35,.35));pointer-events:none}
+.atelier{width:220px;max-width:100%;background:var(--paper);padding:8px 8px 26px;transform:rotate(-2deg);margin-top:20px;box-shadow:0 10px 20px -12px rgba(0,0,0,.5)}
+.atelier img{display:block;width:100%}
+@media (max-width:760px){.sticker{width:64px;opacity:.9}}
+.drawer h2{font:800 32px var(--display);text-transform:uppercase;margin:0}
+.lines{flex:1;overflow:auto;margin:20px 0;border-top:1px solid var(--ink)}
+.line{display:grid;grid-template-columns:1fr auto;gap:4px 12px;padding:12px 0;border-bottom:1px dashed #c9c6ba}
+.line .n{font:700 17px var(--display);text-transform:uppercase}
+.qty{display:flex;gap:6px;align-items:center;font:500 13px var(--mono)}
+.qty button{width:24px;height:24px;border:1px solid var(--ink);background:none;cursor:pointer;font:inherit;color:var(--ink)}
+.tot{display:flex;justify-content:space-between;font:500 14px var(--mono);font-variant-numeric:tabular-nums;padding:4px 0}
+.tot.big{font-size:18px;border-top:1px solid var(--ink);padding-top:10px;margin-top:6px}
+.empty{color:var(--muted);font:400 13px var(--mono);padding:20px 0}
+.x{background:none;border:0;font:500 13px var(--mono);cursor:pointer;color:var(--ink)}
+@media (max-width:760px){.hero,.about{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}}
+@media (max-width:460px){.grid{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.piece img,.piece video,.prod img{display:block;width:100%;height:auto}
+.prod img{aspect-ratio:4/5;object-fit:cover}
+.piece .cap{display:grid;gap:2px}
+.piece .cap b{font-weight:500}
+.piece .cap span{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="ruler" id="ruler" aria-hidden="true"></div>
+<div class="wrap">
+  <img class="sticker" src="assets/s1.png" alt="" style="right:-10px;top:6%;transform:rotate(8deg)">
+  <img class="sticker" src="assets/s6.png" alt="" style="left:-40px;top:16%;transform:rotate(0deg)">
+  <img class="sticker" src="assets/s9.png" alt="" style="right:-30px;top:29%;transform:rotate(-6deg)">
+  <img class="sticker" src="assets/s3.png" alt="" style="left:30%;top:41%;transform:rotate(0deg)">
+  <img class="sticker" src="assets/s10.png" alt="" style="right:12%;top:53%;transform:rotate(5deg)">
+  <img class="sticker" src="assets/s2.png" alt="" style="left:-20px;top:63%;transform:rotate(-8deg)">
+  <img class="sticker" src="assets/s7.png" alt="" style="left:55%;top:74%;transform:rotate(0deg)">
+  <img class="sticker" src="assets/s11.png" alt="" style="right:-20px;top:84%;transform:rotate(-4deg)">
+  <img class="sticker" src="assets/s8.png" alt="" style="left:12%;bottom:30px;transform:rotate(6deg)">
+  <header>
+    <a class="logo" href="#home">Dessin Clandestin<small>Montréal — dessin · peinture · zines</small></a>
+    <nav>
+      <a href="#home" data-v="home">Art</a>
+      <a href="#about" data-v="home">About</a>
+      <a href="#store" data-v="store">Store</a>
+      <button class="btn cartbtn" id="openCart">Cart<b id="count">0</b></button>
+    </nav>
+  </header>
+
+  <main id="home-view">
+    <div class="hero">
+      <div>
+        <p>Drawings, paintings, prints and short-run zines made in Montréal.</p>
+        <p class="dim" style="margin-top:12px">MAT A2 · 600 × 450 MM · GRID 10 MM</p>
+      </div>
+    </div>
+
+    <section>
+      <div class="label">Sélection — Selected work</div>
+      <div class="gallery" id="gallery"></div>
+    </section>
+
+    <section id="about">
+      <div class="label">À propos — About</div>
+      <div class="about">
+        <div>
+          <h2 style="font:800 40px/1 var(--display);text-transform:uppercase;margin:0 0 16px">True Images</h2>
+          <p>After years of visual art, Dessin Clandestin brings together work in every medium made over that time, with a focus on print, painting and short-run zine publications.</p>
+          <figure class="atelier" style="margin-left:0"><img src="assets/atelier.jpg" alt="Félix in an art supply shop, between rolls of canvas and paper"></figure>
+        </div>
+        <div class="fr">
+          <h2 style="font:800 40px/1 var(--display);text-transform:uppercase;margin:0 0 16px">True Images</h2>
+          <p>Après des années d'art visuel, Dessin Clandestin réunit le travail de tous les médiums accumulé au fil du temps, avec une attention particulière au print, à la peinture et aux zines publiés en petits tirages.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <main id="store-view" hidden>
+    <div class="storehead">
+      <div><div class="label">Originaux · Prints · Zines</div><h2>Boutique</h2></div>
+      <div class="filters" id="filters"></div>
+    </div>
+    <div class="grid" id="grid"></div>
+  </main>
+
+  <footer>
+    <span>© 2026 Dessin Clandestin · Montréal</span>
+    <a href="https://www.instagram.com/dessinclandestin/">@dessinclandestin</a>
+  </footer>
+</div>
+
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" aria-label="Cart">
+  <div class="row"><h2>Panier</h2><button class="x" id="closeCart">Close ✕</button></div>
+  <div class="lines" id="lines"></div>
+  <div id="totals"></div>
+  <button class="solid" id="checkout" style="margin-top:14px">Checkout</button>
+  <p class="note" id="coNote" hidden></p>
+  <p class="dim" style="color:var(--muted);margin:8px 0 0">Secure payment by Stripe.</p>
+</aside>
+<script>
+const $=s=>document.querySelector(s);
+const money=n=>n.toFixed(2)+" $";
+let products=[],shipping={flat:8,freeOver:75},cart={},filter="All";
+try{cart=JSON.parse(localStorage.getItem("cart")||"{}")}catch(e){}
+
+const r=$("#ruler"); for(let i=0;i<80;i++){const s=document.createElement("span");s.style.left=(i*120)+"px";s.textContent=i*5;r.appendChild(s)}
+
+function renderGallery(items){
+  $("#gallery").innerHTML=items.map(w=>`<figure class="sheet piece" style="margin:0 0 var(--u)"><span class="cutline"></span>
+    ${w.video?`<video src="${w.file}" muted loop autoplay playsinline></video>`:`<img src="${w.file}" alt="${w.title}" loading="lazy">`}
+    <figcaption class="cap"><b>${w.title}</b><span>${[w.medium,w.date].filter(Boolean).join(" · ")}</span></figcaption></figure>`).join("");
+}
+function renderFilters(){
+  $("#filters").innerHTML=["All","Original","Print","Zine"].map(k=>`<button class="btn" aria-pressed="${k===filter}" data-f="${k}">${k}</button>`).join("");
+}
+function renderGrid(){
+  $("#grid").innerHTML=products.filter(p=>filter==="All"||p.kind===filter).map(p=>`
+    <article class="sheet prod"><span class="cutline"></span>
+      ${p.image?`<img src="${p.image}" alt="${p.name}" loading="lazy">`:`<div class="plate" style="background:${p.color||"#555"}">${p.name}</div>`}
+      <div class="body">
+        <div class="dim">${p.kind.toUpperCase()} · ${p.note}</div>
+        <h3>${p.name}</h3>
+        <div class="row"><span class="price">${money(p.price)}</span>
+          <button class="add" data-add="${p.id}" ${p.stock?"":"disabled"}>${p.stock?"Add":"Sold out"}</button></div>
+      </div>
+    </article>`).join("");
+}
+function save(){try{localStorage.setItem("cart",JSON.stringify(cart))}catch(e){}}
+function renderCart(){
+  for(const id in cart){const p=products.find(x=>x.id===id);if(!p||!p.stock)delete cart[id];else cart[id]=Math.min(cart[id],p.stock)}
+  const ids=Object.keys(cart);
+  $("#count").textContent=ids.reduce((a,id)=>a+cart[id],0);
+  $("#lines").innerHTML=ids.length?ids.map(id=>{const p=products.find(x=>x.id===id);return`
+    <div class="line"><span class="n">${p.name}</span><span class="price">${money(p.price*cart[id])}</span>
+      <span class="qty"><button data-q="${id}" data-d="-1">−</button>${cart[id]}<button data-q="${id}" data-d="1">+</button></span>
+      <button class="x" data-q="${id}" data-d="-99">Remove</button></div>`}).join(""):`<p class="empty">Your cart is empty.</p>`;
+  const sub=ids.reduce((a,id)=>a+products.find(x=>x.id===id).price*cart[id],0);
+  const ship=sub?(sub>=shipping.freeOver?0:shipping.flat):0;
+  $("#totals").innerHTML=`<div class="tot"><span>Subtotal</span><span>${money(sub)}</span></div>
+    <div class="tot"><span>Shipping (Canada)</span><span>${ship?money(ship):"Free"}</span></div>
+    <div class="tot"><span>Taxes</span><span>At checkout</span></div>
+    <div class="tot big"><span>Total before tax</span><span>${money(sub+ship)}</span></div>
+    <p class="dim" style="color:var(--muted);margin:6px 0 0">Free shipping over ${shipping.freeOver} $. Free pickup in Montréal.</p>`;
+  $("#checkout").disabled=!ids.length;
+}
+function openCart(o){$("#drawer").classList.toggle("open",o);$("#scrim").hidden=!o}
+
+document.addEventListener("click",e=>{
+  const t=e.target.closest("[data-add],[data-q],[data-f]"); if(!t)return;
+  if(t.dataset.add){const p=products.find(x=>x.id===t.dataset.add);cart[p.id]=Math.min((cart[p.id]||0)+1,p.stock);save();renderCart();openCart(true)}
+  if(t.dataset.q){cart[t.dataset.q]+= +t.dataset.d;if(cart[t.dataset.q]<=0)delete cart[t.dataset.q];save();renderCart()}
+  if(t.dataset.f){filter=t.dataset.f;renderFilters();renderGrid()}
+});
+$("#openCart").onclick=()=>openCart(true);
+$("#closeCart").onclick=$("#scrim").onclick=()=>openCart(false);
+$("#checkout").onclick=async()=>{
+  const b=$("#checkout"),n=$("#coNote"); b.disabled=true; b.textContent="Opening Stripe…"; n.hidden=true;
+  const res=await fetch("/api/checkout",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({items:Object.entries(cart).map(([id,qty])=>({id,qty}))})});
+  if(res.ok){location.href=(await res.json()).url;return}
+  n.textContent=await res.text(); n.hidden=false; b.disabled=false; b.textContent="Checkout";
+};
+
+function route(){
+  const store=location.hash==="#store";
+  $("#home-view").hidden=store;$("#store-view").hidden=!store;
+  document.querySelectorAll("nav a").forEach(a=>a.toggleAttribute("aria-current",store?a.dataset.v==="store":a.getAttribute("href")==="#home"));
+  if(store)scrollTo(0,0);
+}
+addEventListener("hashchange",route);
+route();
+fetch("gallery.json").then(r=>r.json()).then(renderGallery);
+fetch("products.json").then(r=>r.json()).then(d=>{products=d.items;shipping=d.shipping;renderFilters();renderGrid();renderCart()});
+</script>
+</body>
+</html>
