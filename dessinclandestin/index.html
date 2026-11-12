@@ -18,6 +18,7 @@
   --display:"Barlow Condensed","Arial Narrow",sans-serif; --body:"Work Sans",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
   --u:24px; color-scheme:light;
 }
+html{overflow-x:clip}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 body{background:var(--mat);color:var(--print);font-family:var(--body);font-size:15px;line-height:1.55;
@@ -110,7 +111,27 @@ html,html *{cursor:url(assets/cursor.png) 8 1,auto!important}
 .piece .cap b{font-weight:500}
 .piece .cap span{color:var(--muted)}
 .piece{transition:transform .15s}
-.piece:hover{transform:rotate(-.6deg)}
+.piece:hover{--lift:-3px}
+/* hand-placed feel: small offsets, no rotation */
+.piece,.prod{transform:translate(var(--dx,0),calc(var(--dy,0px) + var(--lift,0px)));transition:transform .15s}
+.piece:nth-child(4n+1),.prod:nth-child(4n+1){--dx:5px;--dy:6px}
+.piece:nth-child(4n+2),.prod:nth-child(4n+2){--dx:-6px;--dy:18px}
+.piece:nth-child(4n+3),.prod:nth-child(4n+3){--dx:-3px;--dy:-4px}
+.piece:nth-child(4n),.prod:nth-child(4n){--dx:7px;--dy:10px}
+.prod:hover{--lift:-3px}
+.logo{position:relative;left:3px;top:4px}
+nav a,nav .btn{position:relative}
+nav a:nth-child(2){top:3px}
+nav a:nth-child(3){top:-2px;left:2px}
+nav a:nth-child(4){top:2px}
+nav .cartbtn{top:-3px}
+.hero p{position:relative;left:9px}
+.label{position:relative;left:-4px}
+section:nth-of-type(2) .label{left:10px}
+.storehead h2{position:relative;left:-3px;top:4px}
+.filters{position:relative;top:-6px}
+.about .fr{padding-top:22px}
+
 [data-prod]{display:block}
 .tag{color:var(--cut)!important;font-weight:500}
 .lb{position:fixed;inset:0;z-index:30;background:rgba(18,32,25,.94);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;
@@ -128,15 +149,15 @@ html,html *{cursor:url(assets/cursor.png) 8 1,auto!important}
 </head>
 <body>
 <div class="wrap">
-  <img class="sticker" src="assets/s1.png" alt="" style="right:-10px;top:6%;transform:rotate(8deg)">
-  <img class="sticker" src="assets/s6.png" alt="" style="left:-40px;top:16%;transform:rotate(0deg)">
-  <img class="sticker" src="assets/s9.png" alt="" style="right:-30px;top:29%;transform:rotate(-6deg)">
+  <img class="sticker" src="assets/s1.png" alt="" style="right:-105px;top:6%;transform:rotate(8deg)">
+  <img class="sticker" src="assets/s6.png" alt="" style="left:-105px;top:16%;transform:rotate(0deg)">
+  <img class="sticker" src="assets/s9.png" alt="" style="right:-100px;top:29%;transform:rotate(-6deg)">
   <img class="sticker" src="assets/s3.png" alt="" style="left:30%;top:41%;transform:rotate(0deg)">
   <img class="sticker" src="assets/s10.png" alt="" style="right:12%;top:53%;transform:rotate(5deg)">
-  <img class="sticker" src="assets/s2.png" alt="" style="left:-20px;top:63%;transform:rotate(-8deg)">
-  <img class="sticker" src="assets/s7.png" alt="" style="left:55%;top:74%;transform:rotate(0deg)">
-  <img class="sticker" src="assets/s11.png" alt="" style="right:-20px;top:84%;transform:rotate(-4deg)">
-  <img class="sticker" src="assets/s8.png" alt="" style="left:12%;bottom:30px;transform:rotate(6deg)">
+  <img class="sticker" src="assets/s2.png" alt="" style="left:-100px;top:63%;transform:rotate(-8deg)">
+  <img class="sticker" src="assets/s7.png" alt="" style="left:55%;top:48%;transform:rotate(0deg)">
+  <img class="sticker" src="assets/s11.png" alt="" style="right:-105px;top:80%;transform:rotate(-4deg)">
+  <img class="sticker" src="assets/s8.png" alt="" style="left:-95px;bottom:30px;transform:rotate(6deg)">
   <header>
     <a class="logo" href="#home">Dessin Clandestin<small>Montréal — dessin · peinture · zines</small></a>
     <nav>
