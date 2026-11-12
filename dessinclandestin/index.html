@@ -111,10 +111,9 @@ html,html *{cursor:url(assets/cursor.png) 8 1,auto!important}
 .thumb{width:56px;height:56px;padding:0;border:1px solid transparent;background:none;opacity:.6;overflow:hidden}
 .thumb img,.thumb video{width:100%;height:100%;object-fit:cover;display:block}
 .thumb[aria-current=true]{opacity:1;border-color:var(--paper)}
-.lbnav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border:1px solid var(--mat);background:none;color:var(--paper);font:400 22px var(--mono)}
+.lbstage{display:flex;align-items:center;justify-content:center;gap:16px;max-width:100%}
+.lbnav{flex:none;width:44px;height:44px;border:1px solid var(--mat);background:none;color:var(--paper);font:400 22px var(--mono)}
 .lbnav:hover{background:var(--cut);border-color:var(--cut)}
-#lbPrev{left:max(16px,env(safe-area-inset-left,0px))}
-#lbNext{right:max(16px,env(safe-area-inset-right,0px))}
 .grid{align-items:start}
 .size{font:500 12px var(--mono);color:var(--ink)}
 .piece .cap{display:grid;gap:2px}
@@ -147,9 +146,9 @@ section:nth-of-type(2) .label{left:10px}
 .tag{color:var(--cut)!important;font-weight:500}
 .lb{position:fixed;inset:0;z-index:30;background:rgba(18,32,25,.94);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;
   padding:calc(56px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
-.lbmedia{display:flex;align-items:center;justify-content:center;width:100%}
+.lbmedia{display:flex;align-items:center;justify-content:center;min-width:0}
 .lbmedia video{pointer-events:none}
-.lbmedia img,.lbmedia video{max-width:100%;max-height:calc(100vh - 290px);object-fit:contain;background:var(--paper)}
+.lbmedia img,.lbmedia video{max-width:calc(100vw - 160px);max-height:calc(100vh - 290px);object-fit:contain;background:var(--paper)}
 .lbcap{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;color:var(--mat);font:500 13px var(--mono)}
 .desc{max-width:60ch;margin:12px auto 0;font:400 15px/1.55 var(--body);color:var(--paper);text-transform:none;letter-spacing:0;white-space:pre-line}
 .lbcap b{display:block;font:800 30px/1 var(--display);text-transform:uppercase;color:var(--paper);margin-bottom:4px}
@@ -228,9 +227,11 @@ section:nth-of-type(2) .label{left:10px}
 <div class="scrim" id="scrim" hidden></div>
 <div class="lb" id="lb" hidden role="dialog" aria-label="Œuvre">
   <button class="lbx" id="lbClose" aria-label="Fermer / Close">✕</button>
-  <button class="lbnav" id="lbPrev" aria-label="Précédent / Previous" hidden>←</button>
-  <button class="lbnav" id="lbNext" aria-label="Suivant / Next" hidden>→</button>
-  <div class="lbmedia" id="lbMedia"></div>
+  <div class="lbstage">
+    <button class="lbnav" id="lbPrev" aria-label="Précédent / Previous" hidden>←</button>
+    <div class="lbmedia" id="lbMedia"></div>
+    <button class="lbnav" id="lbNext" aria-label="Suivant / Next" hidden>→</button>
+  </div>
   <div class="lbthumbs" id="lbThumbs"></div>
   <div class="lbcap" id="lbCap"></div>
 </div>
@@ -347,7 +348,8 @@ Promise.all([fetch("gallery.json").then(r=>r.json()),fetch("products.json").then
 $("#lbClose").onclick=closeLightbox;
 $("#lbPrev").onclick=()=>showMedia(lbIdx-1);
 $("#lbNext").onclick=()=>showMedia(lbIdx+1);
-$("#lb").onclick=e=>{if(e.target.id==="lb"||e.target.id==="lbMedia")closeLightbox()};
+$("#lb").onclick=e=>{if(e.target.id==="lb"||e.target.classList.contains("lbstage"))closeLightbox()};
+$("#lbMedia").onclick=()=>{if(lbList.length>1)showMedia(lbIdx+1)};
 addEventListener("keydown",e=>{if(e.key==="Escape")closeLightbox();if(!$("#lb").hidden&&lbList.length>1){if(e.key==="ArrowRight")showMedia(lbIdx+1);if(e.key==="ArrowLeft")showMedia(lbIdx-1)}if(e.key==="Enter"&&e.target.dataset.open)openLightbox(+e.target.dataset.open);if(e.key==="Enter"&&e.target.dataset.prod)openProduct(e.target.dataset.prod)});
 </script>
 </body>
