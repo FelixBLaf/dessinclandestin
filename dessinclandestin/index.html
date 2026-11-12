@@ -129,6 +129,7 @@ nav .cartbtn{top:-3px}
 .label{position:relative;left:-4px}
 section:nth-of-type(2) .label{left:10px}
 .storehead h2{position:relative;left:-3px;top:4px}
+.shipnote{font:500 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--print);margin:-16px 0 32px 6px}
 .filters{position:relative;top:-6px}
 .about .fr{padding-top:22px}
 
@@ -202,6 +203,7 @@ section:nth-of-type(2) .label{left:10px}
       <div><div class="label">Originaux · Prints · Zines</div><h2>Boutique</h2></div>
       <div class="filters" id="filters"></div>
     </div>
+    <p class="shipnote">Expédition au moins 2 semaines après la commande · Orders ship at least 2 weeks after purchase</p>
     <div class="grid" id="grid"></div>
   </main>
 
@@ -282,7 +284,7 @@ function renderCart(){
     <div class="tot"><span>Shipping (Canada)</span><span>${ship?money(ship):"Free"}</span></div>
     <div class="tot"><span>Taxes</span><span>At checkout</span></div>
     <div class="tot big"><span>Total before tax</span><span>${money(sub+ship)}</span></div>
-    <p class="dim" style="color:var(--muted);margin:6px 0 0">Free shipping over ${shipping.freeOver} $. Free pickup in Montréal.</p>`;
+    <p class="dim" style="color:var(--muted);margin:6px 0 0">Free shipping over ${shipping.freeOver} $. Free pickup in Montréal.<br>Ships at least 2 weeks after your order.</p>`;
   $("#checkout").disabled=!ids.length;
 }
 function openCart(o){$("#drawer").classList.toggle("open",o);$("#scrim").hidden=!o}
