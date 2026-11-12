@@ -9,6 +9,21 @@
   },
   "items": [
     {
+      "id": "c01",
+      "name": "Clock",
+      "kind": "Object",
+      "price": 250,
+      "stock": 0,
+      "soon": true,
+      "note": "2026",
+      "size": "",
+      "description": "",
+      "media": [
+        "products/2026_Clock_Object.mp4"
+      ],
+      "image": "products/2026_Clock_Object.mp4"
+    },
+    {
       "id": "z01",
       "name": "The art of the queue",
       "kind": "Zine",
@@ -16,7 +31,8 @@
       "stock": 0,
       "note": "2026",
       "size": "4.75 × 3.25 in",
-      "image": "products/2026_The-art-of-the-queue_Zine.jpg"
+      "image": "products/2026_The-art-of-the-queue_Zine.jpg",
+      "description": "The art of the queue is a universal concept, essential to master in the modern world. The line reveals the values, codes and psychology of a society."
     },
     {
       "id": "p01",
@@ -26,7 +42,8 @@
       "stock": 0,
       "note": "2025",
       "size": "17 × 11 in",
-      "image": "products/2025-12-29_Art-of-the-queue_Print.jpg"
+      "image": "products/2025-12-29_Art-of-the-queue_Print.jpg",
+      "description": ""
     },
     {
       "id": "p02",
@@ -36,7 +53,8 @@
       "stock": 0,
       "note": "2025",
       "size": "17 × 11 in",
-      "image": "products/2025-12-29_Art-of-the-queue_Print_1.jpg"
+      "image": "products/2025-12-29_Art-of-the-queue_Print_1.jpg",
+      "description": ""
     },
     {
       "id": "p03",
@@ -46,7 +64,8 @@
       "stock": 0,
       "note": "2025",
       "size": "17 × 11 in",
-      "image": "products/2025-12-29_Art-of-the-queue_2_Print.jpg"
+      "image": "products/2025-12-29_Art-of-the-queue_2_Print.jpg",
+      "description": ""
     },
     {
       "id": "p04",
@@ -56,7 +75,8 @@
       "stock": 0,
       "note": "2025",
       "size": "",
-      "image": "products/2025_Beach-day_Print.jpg"
+      "image": "products/2025_Beach-day_Print.jpg",
+      "description": ""
     }
   ]
 }

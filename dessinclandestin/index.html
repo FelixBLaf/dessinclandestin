@@ -104,7 +104,17 @@ html,html *{cursor:url(assets/cursor.png) 8 1,auto!important}
 @media (max-width:760px){.hero,.about{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}}
 @media (max-width:460px){.grid{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
-.piece img,.piece video,.prod img{display:block;width:100%;height:auto}
+.piece img,.piece video,.prod img,.prod video{display:block;width:100%;height:auto}
+[data-prod]{position:relative}
+.count{position:absolute;right:8px;bottom:8px;background:var(--paper);color:var(--ink);font:500 11px var(--mono);padding:2px 6px}
+.lbthumbs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.thumb{width:56px;height:56px;padding:0;border:1px solid transparent;background:none;opacity:.6;overflow:hidden}
+.thumb img,.thumb video{width:100%;height:100%;object-fit:cover;display:block}
+.thumb[aria-current=true]{opacity:1;border-color:var(--paper)}
+.lbnav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border:1px solid var(--mat);background:none;color:var(--paper);font:400 22px var(--mono)}
+.lbnav:hover{background:var(--cut);border-color:var(--cut)}
+#lbPrev{left:max(16px,env(safe-area-inset-left,0px))}
+#lbNext{right:max(16px,env(safe-area-inset-right,0px))}
 .grid{align-items:start}
 .size{font:500 12px var(--mono);color:var(--ink)}
 .piece .cap{display:grid;gap:2px}
@@ -138,8 +148,9 @@ section:nth-of-type(2) .label{left:10px}
 .lb{position:fixed;inset:0;z-index:30;background:rgba(18,32,25,.94);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;
   padding:calc(56px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
 .lbmedia{display:flex;align-items:center;justify-content:center;width:100%}
-.lbmedia img,.lbmedia video{max-width:100%;max-height:calc(100vh - 200px);object-fit:contain;background:var(--paper)}
+.lbmedia img,.lbmedia video{max-width:100%;max-height:calc(100vh - 290px);object-fit:contain;background:var(--paper)}
 .lbcap{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;color:var(--mat);font:500 13px var(--mono)}
+.desc{max-width:60ch;margin:12px auto 0;font:400 15px/1.55 var(--body);color:var(--paper);text-transform:none;letter-spacing:0;white-space:pre-line}
 .lbcap b{display:block;font:800 30px/1 var(--display);text-transform:uppercase;color:var(--paper);margin-bottom:4px}
 .lbcap .solid{background:var(--paper);color:var(--ink)}
 .lbcap .solid:hover{background:var(--cut);color:var(--paper)}
@@ -200,7 +211,7 @@ section:nth-of-type(2) .label{left:10px}
 
   <main id="store-view" hidden>
     <div class="storehead">
-      <div><div class="label">Originaux · Prints · Zines</div><h2>Boutique</h2></div>
+      <div><div class="label">Originaux · Prints · Zines · Objets</div><h2>Boutique</h2></div>
       <div class="filters" id="filters"></div>
     </div>
     <p class="shipnote">Expédition au moins 2 semaines après la commande · Orders ship at least 2 weeks after purchase</p>
@@ -216,7 +227,10 @@ section:nth-of-type(2) .label{left:10px}
 <div class="scrim" id="scrim" hidden></div>
 <div class="lb" id="lb" hidden role="dialog" aria-label="Œuvre">
   <button class="lbx" id="lbClose" aria-label="Fermer / Close">✕</button>
+  <button class="lbnav" id="lbPrev" aria-label="Précédent / Previous" hidden>←</button>
+  <button class="lbnav" id="lbNext" aria-label="Suivant / Next" hidden>→</button>
   <div class="lbmedia" id="lbMedia"></div>
+  <div class="lbthumbs" id="lbThumbs"></div>
   <div class="lbcap" id="lbCap"></div>
 </div>
 <aside class="drawer" id="drawer" aria-label="Cart">
@@ -244,28 +258,39 @@ function renderGallery(){
     ${w.video?`<video src="${w.file}" muted loop autoplay playsinline></video>`:`<img src="${w.file}" alt="${w.title}" loading="lazy">`}
     <figcaption class="cap"><b>${p?p.name:w.title}</b><span>${[w.medium,year(w.date)].filter(Boolean).join(" · ")}</span></figcaption></figure>`}).join("");
 }
-function showLightbox(file,title,sub,p,video){
-  $("#lbMedia").innerHTML=file?(video?`<video src="${file}" controls autoplay loop playsinline></video>`:`<img src="${file}" alt="${title}">`):`<div class="plate" style="background:${p.color||"#555"};color:var(--paper);width:min(420px,80vw);aspect-ratio:4/5">${title}</div>`;
-  $("#lbCap").innerHTML=`<div><b>${title}</b><span>${sub}</span></div>`+
-    (p?(p.stock?`<button class="solid" data-buy="${p.id}">Acheter / Buy · ${money(p.price)}</button>`:`<span class="sold">Vendu / Sold out</span>`):"");
+const isVideo=f=>/\.(mp4|webm)$/i.test(f||"");
+const mediaOf=p=>p.media&&p.media.length?p.media:(p.image?[p.image]:[]);
+const mediaTag=(f,alt,full)=>isVideo(f)?`<video src="${f}" muted loop autoplay playsinline${full?" controls":""}></video>`:`<img src="${f}" alt="${alt}"${full?"":' loading="lazy"'}>`;
+let lbList=[],lbIdx=0,lbTitle="";
+function showMedia(i){
+  lbIdx=(i+lbList.length)%lbList.length;
+  $("#lbMedia").innerHTML=mediaTag(lbList[lbIdx],lbTitle,true);
+  $("#lbThumbs").innerHTML=lbList.length>1?lbList.map((f,k)=>`<button class="thumb" data-m="${k}" aria-current="${k===lbIdx}">${mediaTag(f,"",false)}</button>`).join(""):"";
+  $("#lbPrev").hidden=$("#lbNext").hidden=lbList.length<2;
+}
+function showLightbox(list,title,sub,p){
+  lbList=list;lbTitle=title;
+  if(list.length)showMedia(0);else{$("#lbMedia").innerHTML=`<div class="plate" style="background:${p.color||"#555"};color:var(--paper);width:min(420px,80vw);aspect-ratio:4/5">${title}</div>`;$("#lbThumbs").innerHTML="";$("#lbPrev").hidden=$("#lbNext").hidden=true}
+  $("#lbCap").innerHTML=`<div><b>${title}</b><span>${sub}</span>${p&&p.description?`<p class="desc">${p.description}</p>`:""}</div>`+
+    (p?(p.soon?`<span class="sold">Bientôt / Coming soon · ${money(p.price)}</span>`:p.stock?`<button class="solid" data-buy="${p.id}">Acheter / Buy · ${money(p.price)}</button>`:`<span class="sold">Vendu / Sold out</span>`):"");
   $("#lb").hidden=false; document.body.style.overflow="hidden";
 }
-function openLightbox(i){const w=works[i];const p=productFor(w);showLightbox(w.file,p?p.name:w.title,[w.medium,year(w.date),p&&p.size].filter(Boolean).join(" · "),null,w.video)}
-function openProduct(id){const p=products.find(x=>x.id===id);showLightbox(p.image,p.name,[p.kind,p.note,p.size].filter(Boolean).join(" · "),p)}
+function openLightbox(i){const w=works[i];const p=productFor(w);showLightbox([w.file],p?p.name:w.title,[w.medium,year(w.date),p&&p.size].filter(Boolean).join(" · "),null)}
+function openProduct(id){const p=products.find(x=>x.id===id);showLightbox(mediaOf(p),p.name,[p.kind,p.note,p.size].filter(Boolean).join(" · "),p)}
 function closeLightbox(){$("#lb").hidden=true;$("#lbMedia").innerHTML="";document.body.style.overflow=""}
 function renderFilters(){
-  $("#filters").innerHTML=["All","Original","Print","Zine"].map(k=>`<button class="btn" aria-pressed="${k===filter}" data-f="${k}">${k}</button>`).join("");
+  $("#filters").innerHTML=["All","Original","Print","Zine","Object"].map(k=>`<button class="btn" aria-pressed="${k===filter}" data-f="${k}">${k}</button>`).join("");
 }
 function renderGrid(){
   $("#grid").innerHTML=products.filter(p=>filter==="All"||p.kind===filter).map(p=>`
     <article class="sheet prod"><span class="cutline"></span>
-      <div data-prod="${p.id}" tabindex="0">${p.image?`<img src="${p.image}" alt="${p.name}" loading="lazy">`:`<div class="plate" style="background:${p.color||"#555"}">${p.name}</div>`}</div>
+      <div data-prod="${p.id}" tabindex="0">${mediaOf(p).length?mediaTag(mediaOf(p)[0],p.name,false):`<div class="plate" style="background:${p.color||"#555"}">${p.name}</div>`}${mediaOf(p).length>1?`<span class="count">1 / ${mediaOf(p).length}</span>`:""}</div>
       <div class="body">
         <div class="dim">${p.kind.toUpperCase()} · ${p.note}</div>
         <h3>${p.name}</h3>
         ${p.size?`<div class="size">${p.size}</div>`:""}
         <div class="row"><span class="price">${money(p.price)}</span>
-          <button class="add" data-add="${p.id}" ${p.stock?"":"disabled"}>${p.stock?"Add":"Sold out"}</button></div>
+          <button class="add" data-add="${p.id}" ${p.stock&&!p.soon?"":"disabled"}>${p.soon?"Coming soon":p.stock?"Add":"Sold out"}</button></div>
       </div>
     </article>`).join("");
 }
@@ -292,6 +317,7 @@ function openCart(o){$("#drawer").classList.toggle("open",o);$("#scrim").hidden=
 document.addEventListener("click",e=>{
   const o=e.target.closest("[data-open]"); if(o){openLightbox(+o.dataset.open);return}
   const pr=e.target.closest("[data-prod]"); if(pr){openProduct(pr.dataset.prod);return}
+  const m=e.target.closest("[data-m]"); if(m){showMedia(+m.dataset.m);return}
   const b=e.target.closest("[data-buy]"); if(b){const p=products.find(x=>x.id===b.dataset.buy);cart[p.id]=Math.min((cart[p.id]||0)+1,p.stock);save();renderCart();closeLightbox();openCart(true);return}
   const t=e.target.closest("[data-add],[data-q],[data-f]"); if(!t)return;
   if(t.dataset.add){const p=products.find(x=>x.id===t.dataset.add);cart[p.id]=Math.min((cart[p.id]||0)+1,p.stock);save();renderCart();openCart(true)}
@@ -318,8 +344,10 @@ route();
 Promise.all([fetch("gallery.json").then(r=>r.json()),fetch("products.json").then(r=>r.json())]).then(([g,d])=>{
   works=g;products=d.items;shipping=d.shipping;renderGallery();renderFilters();renderGrid();renderCart()});
 $("#lbClose").onclick=closeLightbox;
+$("#lbPrev").onclick=()=>showMedia(lbIdx-1);
+$("#lbNext").onclick=()=>showMedia(lbIdx+1);
 $("#lb").onclick=e=>{if(e.target.id==="lb"||e.target.id==="lbMedia")closeLightbox()};
-addEventListener("keydown",e=>{if(e.key==="Escape")closeLightbox();if(e.key==="Enter"&&e.target.dataset.open)openLightbox(+e.target.dataset.open);if(e.key==="Enter"&&e.target.dataset.prod)openProduct(e.target.dataset.prod)});
+addEventListener("keydown",e=>{if(e.key==="Escape")closeLightbox();if(!$("#lb").hidden&&lbList.length>1){if(e.key==="ArrowRight")showMedia(lbIdx+1);if(e.key==="ArrowLeft")showMedia(lbIdx-1)}if(e.key==="Enter"&&e.target.dataset.open)openLightbox(+e.target.dataset.open);if(e.key==="Enter"&&e.target.dataset.prod)openProduct(e.target.dataset.prod)});
 </script>
 </body>
 </html>
