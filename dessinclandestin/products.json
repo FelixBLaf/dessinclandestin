@@ -1,39 +1,9 @@
 {
-  "shipping": {
-    "flat": 8,
-    "freeOver": 75,
-    "countries": [
-      "CA"
-    ],
-    "pickup": "Pickup in Montréal"
-  },
+  "shipping": { "flat": 8, "freeOver": 75, "countries": ["CA"], "pickup": "Pickup in Montréal" },
   "items": [
-    {
-      "id": "p01",
-      "name": "Art of the queue — I",
-      "kind": "Print",
-      "price": 35,
-      "stock": 10,
-      "note": "Print · 2025",
-      "image": "products/2025-12-29_Art-of-the-queue_Print.jpg"
-    },
-    {
-      "id": "p02",
-      "name": "Art of the queue — II",
-      "kind": "Print",
-      "price": 35,
-      "stock": 10,
-      "note": "Print · 2025",
-      "image": "products/2025-12-29_Art-of-the-queue_Print_1.jpg"
-    },
-    {
-      "id": "p03",
-      "name": "Art of the queue — III",
-      "kind": "Print",
-      "price": 35,
-      "stock": 10,
-      "note": "Print · 2025",
-      "image": "products/2025-12-29_Art-of-the-queue_2_Print.jpg"
-    }
+    { "id": "z01", "name": "The art of the queue", "kind": "Zine", "price": 15, "stock": 20, "note": "2026", "size": "4.75 × 3.25 in", "image": "products/2026_The-art-of-the-queue_Zine.jpg" },
+    { "id": "p01", "name": "Art of the queue 1", "kind": "Print", "price": 35, "stock": 10, "note": "2025", "size": "17 × 11 in", "image": "products/2025-12-29_Art-of-the-queue_Print.jpg" },
+    { "id": "p02", "name": "Art of the queue 2", "kind": "Print", "price": 35, "stock": 10, "note": "2025", "size": "17 × 11 in", "image": "products/2025-12-29_Art-of-the-queue_Print_1.jpg" },
+    { "id": "p03", "name": "Art of the queue 3", "kind": "Print", "price": 35, "stock": 10, "note": "2025", "size": "17 × 11 in", "image": "products/2025-12-29_Art-of-the-queue_2_Print.jpg" }
   ]
 }
