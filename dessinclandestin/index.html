@@ -78,6 +78,9 @@ section{margin-bottom:140px}
 .count{position:absolute;right:10px;bottom:10px;background:var(--paper);font-size:12px;padding:2px 8px;border-radius:20px}
 
 main{margin-bottom:120px}
+.matnums{position:absolute;top:0;left:0;width:100%;pointer-events:none;z-index:0;font:400 10px var(--sans);color:rgba(20,40,30,.32);font-variant-numeric:tabular-nums;overflow:hidden}
+.matnums span{position:absolute}
+.wrap{position:relative;z-index:1}
 footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;border-top:1px solid var(--rule);padding-top:20px;font-size:13px;color:var(--muted)}
 footer a{text-decoration:none}
 footer a:hover{color:var(--ink)}
@@ -133,6 +136,7 @@ footer a:hover{color:var(--ink)}
 </style>
 </head>
 <body>
+<div class="matnums" id="matnums" aria-hidden="true"></div>
 <div class="wrap">
   <header>
     <a class="logo" href="#home">Dessin Clandestin<small>Montréal</small></a>
@@ -302,6 +306,14 @@ function route(){
   if(store)scrollTo(0,0);
 }
 addEventListener("hashchange",route);
+function matNumbers(){
+  const g=120,el=$("#matnums"),w=document.documentElement.clientWidth,h=document.documentElement.scrollHeight;
+  el.style.height=h+"px";let out="";
+  for(let i=1;i*g<w;i++)out+=`<span style="left:${i*g+4}px;top:4px">${i*12}</span>`;
+  for(let j=1;j*g<h;j++)out+=`<span style="left:4px;top:${j*g+3}px">${j*12}</span>`;
+  el.innerHTML=out;
+}
+addEventListener("resize",matNumbers);addEventListener("load",matNumbers);new ResizeObserver(matNumbers).observe(document.body);
 route();
 Promise.all([fetch("gallery.json").then(r=>r.json()),fetch("products.json").then(r=>r.json())]).then(([g,d])=>{
   works=g;products=d.items;shipping=d.shipping;renderGallery();renderFilters();renderGrid();renderCart()});
