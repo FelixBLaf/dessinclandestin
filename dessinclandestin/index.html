@@ -143,6 +143,7 @@ html,html *{cursor:url(assets/cursor.png) 8 1,auto!important}
       <a href="#home" data-v="home">Art</a>
       <a href="#about" data-v="home">About</a>
       <a href="#store" data-v="store">Store</a>
+      <a href="https://www.instagram.com/dessinclandestin/" target="_blank" rel="noopener">Instagram</a>
       <button class="btn cartbtn" id="openCart">Cart<b id="count">0</b></button>
     </nav>
   </header>
@@ -185,7 +186,7 @@ html,html *{cursor:url(assets/cursor.png) 8 1,auto!important}
 
   <footer>
     <span>© 2026 Dessin Clandestin · Montréal</span>
-    <a href="https://www.instagram.com/dessinclandestin/">@dessinclandestin</a>
+    <a href="https://www.instagram.com/dessinclandestin/" target="_blank" rel="noopener">Instagram @dessinclandestin</a>
   </footer>
 </div>
 
@@ -218,7 +219,7 @@ let works=[];
 function renderGallery(){
   $("#gallery").innerHTML=works.map((w,i)=>{const p=productFor(w);return`<figure class="sheet piece" data-open="${i}" tabindex="0" style="margin:0 0 var(--u)"><span class="cutline"></span>
     ${w.video?`<video src="${w.file}" muted loop autoplay playsinline></video>`:`<img src="${w.file}" alt="${w.title}" loading="lazy">`}
-    <figcaption class="cap"><b>${p?p.name:w.title}</b><span>${[w.medium,year(w.date)].filter(Boolean).join(" · ")}</span>${p&&p.stock?`<span class="tag">En vente · ${money(p.price)}</span>`:""}</figcaption></figure>`}).join("");
+    <figcaption class="cap"><b>${p?p.name:w.title}</b><span>${[w.medium,year(w.date)].filter(Boolean).join(" · ")}</span></figcaption></figure>`}).join("");
 }
 function showLightbox(file,title,sub,p,video){
   $("#lbMedia").innerHTML=file?(video?`<video src="${file}" controls autoplay loop playsinline></video>`:`<img src="${file}" alt="${title}">`):`<div class="plate" style="background:${p.color||"#555"};color:var(--paper);width:min(420px,80vw);aspect-ratio:4/5">${title}</div>`;
@@ -226,7 +227,7 @@ function showLightbox(file,title,sub,p,video){
     (p?(p.stock?`<button class="solid" data-buy="${p.id}">Acheter / Buy · ${money(p.price)}</button>`:`<span class="sold">Vendu / Sold out</span>`):"");
   $("#lb").hidden=false; document.body.style.overflow="hidden";
 }
-function openLightbox(i){const w=works[i];const p=productFor(w);showLightbox(w.file,p?p.name:w.title,[w.medium,year(w.date),p&&p.size].filter(Boolean).join(" · "),p,w.video)}
+function openLightbox(i){const w=works[i];const p=productFor(w);showLightbox(w.file,p?p.name:w.title,[w.medium,year(w.date),p&&p.size].filter(Boolean).join(" · "),null,w.video)}
 function openProduct(id){const p=products.find(x=>x.id===id);showLightbox(p.image,p.name,[p.kind,p.note,p.size].filter(Boolean).join(" · "),p)}
 function closeLightbox(){$("#lb").hidden=true;$("#lbMedia").innerHTML="";document.body.style.overflow=""}
 function renderFilters(){
