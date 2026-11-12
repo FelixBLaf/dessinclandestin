@@ -7,8 +7,11 @@ const media = /\.(jpe?g|png|webp|gif|mp4|webm)$/i;
 const video = /\.(mp4|webm)$/i;
 const words = s => (s || "").replace(/-/g, " ").trim();
  
+// Files listed in gallery/hidden.txt (one name per line) stay out of the Art page.
+const hidden = fs.existsSync("gallery/hidden.txt") ? fs.readFileSync("gallery/hidden.txt", "utf8").split("\n").map(l => l.trim()) : [];
+ 
 const items = fs.readdirSync("gallery")
-  .filter(f => media.test(f))
+  .filter(f => media.test(f) && !hidden.includes(f))
   .map(f => {
     const [date, ...rest] = f.replace(/\.[^.]+$/, "").split("_");
     const medium = rest.length > 1 ? [...rest].reverse().find(x => isNaN(x)) : "";
