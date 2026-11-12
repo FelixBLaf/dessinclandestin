@@ -11,7 +11,7 @@ const items = fs.readdirSync("gallery")
   .filter(f => media.test(f))
   .map(f => {
     const [date, ...rest] = f.replace(/\.[^.]+$/, "").split("_");
-    const medium = rest.find((x, i) => i > 0 && isNaN(x)) || "";
+    const medium = rest.length > 1 ? [...rest].reverse().find(x => isNaN(x)) : "";
     const title = rest.filter(x => x !== medium).join(" ");
     return { file: "gallery/" + f, date, title: words(title), medium: words(medium), video: video.test(f) };
   })
@@ -19,3 +19,4 @@ const items = fs.readdirSync("gallery")
  
 fs.writeFileSync("gallery.json", JSON.stringify(items, null, 1));
 console.log(`gallery.json: ${items.length} items`);
+ 
