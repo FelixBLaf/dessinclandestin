@@ -11,7 +11,7 @@
     {
       "id": "c01",
       "name": "Clock",
-      "kind": "Object",
+      "kind": "Home",
       "price": 250,
       "stock": 0,
       "soon": true,
