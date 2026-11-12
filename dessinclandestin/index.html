@@ -148,6 +148,7 @@ section:nth-of-type(2) .label{left:10px}
 .lb{position:fixed;inset:0;z-index:30;background:rgba(18,32,25,.94);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;
   padding:calc(56px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
 .lbmedia{display:flex;align-items:center;justify-content:center;width:100%}
+.lbmedia video{pointer-events:none}
 .lbmedia img,.lbmedia video{max-width:100%;max-height:calc(100vh - 290px);object-fit:contain;background:var(--paper)}
 .lbcap{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;color:var(--mat);font:500 13px var(--mono)}
 .desc{max-width:60ch;margin:12px auto 0;font:400 15px/1.55 var(--body);color:var(--paper);text-transform:none;letter-spacing:0;white-space:pre-line}
@@ -260,7 +261,7 @@ function renderGallery(){
 }
 const isVideo=f=>/\.(mp4|webm)$/i.test(f||"");
 const mediaOf=p=>p.media&&p.media.length?p.media:(p.image?[p.image]:[]);
-const mediaTag=(f,alt,full)=>isVideo(f)?`<video src="${f}" muted loop autoplay playsinline${full?" controls":""}></video>`:`<img src="${f}" alt="${alt}"${full?"":' loading="lazy"'}>`;
+const mediaTag=(f,alt,full)=>isVideo(f)?`<video src="${f}#t=0.1" muted loop autoplay playsinline preload="auto" disablepictureinpicture disableremoteplayback></video>`:`<img src="${f}" alt="${alt}"${full?"":' loading="lazy"'}>`;
 let lbList=[],lbIdx=0,lbTitle="";
 function showMedia(i){
   lbIdx=(i+lbList.length)%lbList.length;
