@@ -43,6 +43,7 @@ async function checkout({ request, env }) {
   shipping.countries.forEach((c, i) => p.append(`shipping_address_collection[allowed_countries][${i}]`, c));
 
   p.append("automatic_tax[enabled]", "true"); // Stripe Tax: GST/QST/HST by buyer's province
+  p.append("custom_text[submit][message]", "Expédition au moins 2 semaines après la commande. / Orders ship at least 2 weeks after purchase.");
   p.append("mode", "payment");
   p.append("locale", "auto");
   p.append("phone_number_collection[enabled]", "true");
@@ -58,4 +59,3 @@ async function checkout({ request, env }) {
   if (!res.ok) return new Response(session.error?.message || "Payment error", { status: 500 });
   return Response.json({ url: session.url });
 }
-
