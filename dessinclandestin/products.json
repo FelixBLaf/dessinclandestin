@@ -23,7 +23,8 @@
         "products/2026_Clock_front.jpg",
         "products/2026_Clock_detail.jpg"
       ],
-      "image": "products/2026_Clock_Object.mp4"
+      "image": "products/2026_Clock_Object.mp4",
+      "hidden": true
     },
     {
       "id": "z01",

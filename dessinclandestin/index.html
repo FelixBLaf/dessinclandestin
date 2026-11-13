@@ -247,10 +247,10 @@ function openLightbox(i){const w=works[i];const p=productFor(w);showLightbox([w.
 function openProduct(id){const p=products.find(x=>x.id===id);showLightbox(mediaOf(p),p.name,[p.kind,p.note,p.size].filter(Boolean).join(" · "),p)}
 function closeLightbox(){$("#lb").hidden=true;$("#lbMedia").innerHTML="";document.body.style.overflow=""}
 function renderFilters(){
-  $("#filters").innerHTML=["All","Original","Print","Zine","Home"].map(k=>`<button aria-pressed="${k===filter}" data-f="${k}">${k}</button>`).join("");
+  $("#filters").innerHTML=["All","Original","Print","Zine","Home"].filter(k=>k==="All"||products.some(p=>!p.hidden&&p.kind===k)).map(k=>`<button aria-pressed="${k===filter}" data-f="${k}">${k}</button>`).join("");
 }
 function renderGrid(){
-  $("#grid").innerHTML=products.filter(p=>filter==="All"||p.kind===filter).map(p=>`
+  $("#grid").innerHTML=products.filter(p=>!p.hidden&&(filter==="All"||p.kind===filter)).map(p=>`
     <article class="prod">
       <div class="media" data-prod="${p.id}" tabindex="0">${mediaOf(p).length?mediaTag(mediaOf(p)[0],p.name,false):`<div class="plate" style="background:${p.color||"#555"}">${p.name}</div>`}${mediaOf(p).length>1?`<span class="count">1 / ${mediaOf(p).length}</span>`:""}</div>
       <div class="body">
